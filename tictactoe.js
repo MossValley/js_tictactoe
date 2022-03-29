@@ -22,8 +22,18 @@ function populateBoard() {
     div.className = "grid-item";
     div.id = `slot${element}`;
     div.innerText = element;
+    div.addEventListener('click', (e) => {
+      e.target.innerText = markSquare(e.target.innerText);
+    })
     field.appendChild(div);
   })
+}
+
+function markSquare(value) {
+  if (value !== ('X' || 'O')) {
+    return 'X'
+  }
+  return;
 }
 
 function main() {
