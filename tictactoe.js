@@ -5,6 +5,28 @@ const Game = ((player1, player2) => {
 
   const gridStructure = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+  const populateBoard = () => {
+    const field = document.getElementById('board');
+    console.log('field', field);
+    gridStructure.forEach((element) => {
+      const div = document.createElement('div');
+      div.className = "grid-item";
+      div.id = element;
+      div.innerText = '';
+      div.addEventListener('click', boxIsClicked)
+      field.appendChild(div);
+    })
+  }
+
+  const boxIsClicked = (e) => {
+    e.target.innerText = checkSquare(e.target.id);
+    if (endGame.gameOver) {
+      declareWinner(endGame.winner);
+      stopFurtherClicking();
+    }
+    e.currentTarget.removeEventListener(e.type, boxIsClicked);
+  }
+
   const playerTurn = () => {
     if (player1Turn) {
       whoIsPlaying = player2;
@@ -27,28 +49,6 @@ const Game = ((player1, player2) => {
     return result;
   }
 
-  const populateBoard = () => {
-    const field = document.getElementById('board');
-    console.log('field', field);
-    gridStructure.forEach((element) => {
-      const div = document.createElement('div');
-      div.className = "grid-item";
-      div.id = element;
-      div.innerText = '';
-      div.addEventListener('click', clickResponse)
-      field.appendChild(div);
-    })
-  }
-
-  const clickResponse = (e) => {
-    e.target.innerText = checkSquare(e.target.id);
-    if (endGame.gameOver) {
-      declareWinner(endGame.winner);
-      deactivateBoard();
-    }
-    e.currentTarget.removeEventListener(e.type, clickResponse);
-  }
-
   const declareWinner = (winner) => {
     const theWinnerIs = document.getElementById('winnerTag');
     const div = document.createElement('div');
@@ -57,10 +57,10 @@ const Game = ((player1, player2) => {
     theWinnerIs.append(div);
   }
 
-  const deactivateBoard = () => {
+  const stopFurtherClicking = () => {
     const gridElements = document.getElementsByClassName('grid-item');
     for (let i = 0; i <= gridElements.length - 1; i++) {
-      gridElements.item(i).removeEventListener('click', clickResponse);
+      gridElements.item(i).removeEventListener('click', boxIsClicked);
     }
   }
 
@@ -95,10 +95,11 @@ const Game = ((player1, player2) => {
 
 const Player = ((name, mark) => {
   let squaresMarked = [];
-
-  const resetMarkedSquares = () => {
-    squaresMarked = [];
-  };
+  const winConditions = [
+    [1, 2, 3], [4, 5, 6], [7, 8, 9], //across
+    [1, 4, 7], [2, 5, 8], [3, 6, 9], //down
+    [1, 5, 9], [3, 5, 7] //diagonal
+  ];
 
   const markSquare = (gridSquare) => {
     square = parseInt(gridSquare);
@@ -106,16 +107,14 @@ const Player = ((name, mark) => {
       squaresMarked.push(square);
     }
     if (squaresMarked.length >= 3) {
-      const winner = checkWin()
-      return winner;
+      const isWinner = checkWin()
+      return isWinner;
     }
   }
 
-  const winConditions = [
-    [1, 2, 3], [4, 5, 6], [7, 8, 9], //across
-    [1, 4, 7], [2, 5, 8], [3, 6, 9], //down
-    [1, 5, 9], [3, 5, 7] //diagonal
-  ];
+  const resetMarkedSquares = () => {
+    squaresMarked = [];
+  };
 
   function checkWin() {
     let isWinner = false;
