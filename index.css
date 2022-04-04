@@ -24,3 +24,10 @@
   font-size: 20px;
   text-align: center;
 }
+
+#buttons {
+  background-color: aquamarine;
+  width:max-content;
+  padding: 5px;
+  border: 2px solid green;
+}

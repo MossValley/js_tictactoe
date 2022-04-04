@@ -72,7 +72,7 @@ const Game = ((player1, player2) => {
     player1.resetMarkedSquares();
     player2.resetMarkedSquares();
 
-    this.populateBoard();
+    populateBoard();
   }
 
   return {
@@ -85,10 +85,10 @@ const Game = ((player1, player2) => {
 });
 
 const Player = ((name, mark) => {
-  const squaresMarked = [];
+  let squaresMarked = [];
 
   const resetMarkedSquares = () => {
-    this.squaresMarked = [];
+    squaresMarked = [];
   };
 
   const markSquare = (gridSquare) => {
@@ -154,29 +154,27 @@ const Environment = (board) => {
     gameBoard.populateBoard();
   }
 
-  // const buttons = (() => {
-  //   const reset = {
-  //     name: 'reset',
-  //     function: gameBoard.populateBoard(),
-  //     }
+  const buttons = {
+    reset:{
+      name: 'reset',
+      function: gameBoard.resetBoard,
+    }
+  };
+  buttonArray.push(buttons.reset);
 
-  //   return {reset};
+  const addButtons = () => {
+    const div = document.getElementById('buttons');
+    console.log(buttonArray);
+    buttonArray.forEach((button) => {
+      btn = document.createElement('btn');
+      btn.id = 'btn';
+      btn.textContent = `${button.name}`;
+      btn.addEventListener('click', button.function);
+      div.appendChild(btn);
+    })
+  }
 
-  // })();
-  // buttonArray.push(buttons.reset);
-
-  // const addButtons = () => {
-  //   const div = document.getElementById('buttons');
-  //   buttonArray.forEach((button) => {
-  //     btn = document.createElement('btn');
-  //     btn.id = 'btn';
-  //     btn.textContent = `${button.name}`;
-  //     btn.addEventListener('click', button.function);
-  //     div.appendChild(btn);
-  //   })
-  // }
-
-  return {makeEnv};
+  return {makeEnv, addButtons};
 }
 
 function main() {
@@ -185,6 +183,7 @@ function main() {
   const board = Game(player1, player2)
   const initialize = Environment(board);
   initialize.makeEnv();
+  initialize.addButtons();
 }
 
 main();
