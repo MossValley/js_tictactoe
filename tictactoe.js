@@ -50,11 +50,11 @@ const Game = ((player1, player2) => {
   }
 
   const declareWinner = (winner) => {
-    const win = document.getElementById('winnerTag');
+    const theWinnerIs = document.getElementById('winnerTag');
     const div = document.createElement('div');
     div.className = 'winner';
     div.innerText = `${winner.name} of ${winner.mark} is the winner!`
-    win.append(div);
+    theWinnerIs.append(div);
   }
 
   const deactivateBoard = () => {
@@ -64,6 +64,15 @@ const Game = ((player1, player2) => {
     }
   }
 
+  const removeWinner = () => {
+    const theWinnerIs = document.getElementById('winnerTag');
+    while (theWinnerIs.lastChild) {
+      theWinnerIs.removeChild(theWinnerIs.lastChild);
+    }
+    endGame.gameOver = false;
+    endGame.winner = {name: null, mark: null};
+  }
+
   const resetBoard = () => {
     const field = document.getElementById('board');
       while (field.lastChild) {
@@ -71,7 +80,7 @@ const Game = ((player1, player2) => {
       }
     player1.resetMarkedSquares();
     player2.resetMarkedSquares();
-
+    removeWinner();
     populateBoard();
   }
 
