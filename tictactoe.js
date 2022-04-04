@@ -34,14 +34,14 @@ const Game = ((player1, player2) => {
       const div = document.createElement('div');
       div.className = "grid-item";
       div.id = element;
-      div.innerText = element;
+      div.innerText = '';
       div.addEventListener('click', clickResponse)
       field.appendChild(div);
     })
   }
 
   const clickResponse = (e) => {
-    e.target.innerText = checkSquare(e.target.innerText);
+    e.target.innerText = checkSquare(e.target.id);
     if (endGame.gameOver) {
       declareWinner(endGame.winner);
       deactivateBoard();
@@ -188,7 +188,7 @@ const Environment = (board) => {
 
 function main() {
   const player1 = Player('bob', 'X');
-  const player2 = Player('bill', '0');
+  const player2 = Player('bill', 'O');
   const board = Game(player1, player2)
   const initialize = Environment(board);
   initialize.makeEnv();
