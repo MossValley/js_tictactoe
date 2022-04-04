@@ -29,6 +29,7 @@ const Game = ((player1, player2) => {
 
   const populateBoard = () => {
     const field = document.getElementById('board');
+    console.log('field', field);
     gridStructure.forEach((element) => {
       const div = document.createElement('div');
       div.className = "grid-item";
@@ -63,16 +64,32 @@ const Game = ((player1, player2) => {
     }
   }
 
+  const resetBoard = () => {
+    const field = document.getElementById('board');
+      while (field.lastChild) {
+        field.removeChild(field.lastChild);
+      }
+    player1.resetMarkedSquares();
+    player2.resetMarkedSquares();
+
+    this.populateBoard();
+  }
+
   return {
     gridStructure,
     checkSquare,
     endGame,
     populateBoard,
+    resetBoard,
   }
 });
 
 const Player = ((name, mark) => {
   const squaresMarked = [];
+
+  const resetMarkedSquares = () => {
+    this.squaresMarked = [];
+  };
 
   const markSquare = (gridSquare) => {
     square = parseInt(gridSquare);
@@ -111,14 +128,63 @@ const Player = ((name, mark) => {
     })
     return isWinner;
   }
-  return {name, mark, markSquare};
+  return {name, mark, markSquare, resetMarkedSquares};
 });
+
+const Environment = (board) => {
+  const gameBoard = board;
+  const buttonArray = [];
+
+  const makeEnv = () => {
+    const baseLayer = document.getElementById('environment');
+    console.log('baselayer', baseLayer);
+    const boardDiv = document.createElement('div');
+    const controls = document.createElement('div');
+    const announcement = document.createElement('div');
+
+    boardDiv.id = 'board';
+    boardDiv.className = 'grid-container';
+    controls.id = 'buttons';
+    announcement.id = 'winnerTag';
+
+    baseLayer.appendChild(boardDiv);
+    baseLayer.appendChild(controls);
+    baseLayer.appendChild(announcement);
+
+    gameBoard.populateBoard();
+  }
+
+  // const buttons = (() => {
+  //   const reset = {
+  //     name: 'reset',
+  //     function: gameBoard.populateBoard(),
+  //     }
+
+  //   return {reset};
+
+  // })();
+  // buttonArray.push(buttons.reset);
+
+  // const addButtons = () => {
+  //   const div = document.getElementById('buttons');
+  //   buttonArray.forEach((button) => {
+  //     btn = document.createElement('btn');
+  //     btn.id = 'btn';
+  //     btn.textContent = `${button.name}`;
+  //     btn.addEventListener('click', button.function);
+  //     div.appendChild(btn);
+  //   })
+  // }
+
+  return {makeEnv};
+}
 
 function main() {
   const player1 = Player('bob', 'X');
   const player2 = Player('bill', '0');
   const board = Game(player1, player2)
-  board.populateBoard();
+  const initialize = Environment(board);
+  initialize.makeEnv();
 }
 
 main();
